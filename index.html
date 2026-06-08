@@ -1,319 +1,396 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.6">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; -webkit-text-stroke: #000000; min-height: 14.0px}
-    span.s1 {font-kerning: none}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Placar de Vôlei - LiveNow / OBS</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;700&display=swap');
+
+    :root {
+      --purple-dark: #1a0c36;
+      --purple-main: #4a148c;
+      --purple-deep: #311b92;
+      --yellow: #ffeb3b;
+      --red: #ff5252;
+      --white: #ffffff;
+      --panel-bg: rgba(0, 0, 0, 0.88);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      overflow: hidden;
+      font-family: Roboto, Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 20px;
+    }
+
+    .scoreboard-container {
+      display: flex;
+      align-items: center;
+      height: 60px;
+      max-width: calc(100vw - 20px);
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .team-block {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      min-width: 155px;
+      padding: 0 15px;
+      gap: 12px;
+      color: white;
+      background: linear-gradient(90deg, var(--purple-main), var(--purple-deep));
+    }
+
+    .team-b-block {
+      justify-content: flex-end;
+      background: linear-gradient(90deg, var(--purple-deep), var(--purple-main));
+    }
+
+    .team-name {
+      min-width: 70px;
+      font-family: Oswald, Impact, sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .team-logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 4px;
+      background: rgba(255,255,255,.08);
+    }
+
+    .sets-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      min-width: 50px;
+      color: white;
+      background: var(--purple-dark);
+      border-bottom: 3px solid white;
+    }
+
+    .team-b-sets { border-bottom-color: var(--yellow); }
+
+    .sets-label {
+      margin-bottom: 2px;
+      font-size: 9px;
+      font-weight: 700;
+      opacity: .72;
+      text-transform: uppercase;
+    }
+
+    .sets-score {
+      font-family: Oswald, Impact, sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .points-block {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      min-width: 58px;
+      padding: 0 7px;
+      color: white;
+      background: var(--purple-main);
+      font-family: Oswald, Impact, sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .logo-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      min-width: 86px;
+      padding: 0 15px;
+      color: var(--red);
+      background: var(--purple-deep);
+      font-family: Oswald, Impact, sans-serif;
+      font-size: 24px;
+      font-style: italic;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .control-panel {
+      display: none;
+      margin-top: 30px;
+      padding: 20px;
+      gap: 25px;
+      color: white;
+      background: var(--panel-bg);
+      border-radius: 12px;
+    }
+
+    body.show-controls .control-panel { display: flex; }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .control-group label {
+      color: #ccc;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .btn-row { display: flex; gap: 5px; }
+
+    button {
+      min-width: 42px;
+      padding: 6px 14px;
+      color: white;
+      background: var(--purple-main);
+      border: 0;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .btn-clear { background: #d32f2f; }
+
+    input[type="text"], input[type="url"] {
+      width: 95px;
+      padding: 4px;
+      color: white;
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 4px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .url-input {
+      width: 170px !important;
+      font-size: 10px;
+    }
   </style>
 </head>
+
 <body>
-<p class="p1"><span class="s1">&lt;&lt;!DOCTYPE html&gt;</span></p>
-<p class="p1"><span class="s1">&lt;html lang="pt-BR"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;head&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;title&gt;Placar Vôlei VNL Personalizado - LiveNow&lt;/title&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;style&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&amp;family=Roboto:wght@400;700&amp;display=swap');</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>body {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>margin: 0;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding: 0;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: transparent;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-family: 'Roboto', sans-serif;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>display: flex;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>flex-direction: column;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>align-items: center;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>overflow: hidden;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>height: 100vh;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>justify-content: flex-start;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding-top: 20px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/* Container Principal do Placar baseado na imagem image.png */</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.scoreboard-container {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>display: flex;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>align-items: center;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>height: 60px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>box-shadow: 0 8px 16px rgba(0,0,0,0.3);<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>user-select: none;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/* Blocos dos Times */</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.team-block {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>display: flex;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>align-items: center;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background: linear-gradient(90deg, #4A148C, #311B92);<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>height: 100%;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: white;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding: 0 15px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>gap: 12px; /* Espaço entre o escudo e o texto */</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.team-name {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-family: 'Oswald', sans-serif;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-size: 28px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-weight: 700;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>text-transform: uppercase;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>letter-spacing: 1px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>min-width: 70px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>#teamA-display { text-align: left; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>#teamB-display { text-align: right; }</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/* Estilo dos Escudos/Logos dos Times */</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.team-logo {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>width: 40px;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>height: 40px;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>object-fit: contain;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border-radius: 4px;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/* Estrutura de Sets */</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.sets-block {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: #1A0C36;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>height: 100%;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>display: flex;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>flex-direction: column;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>justify-content: center;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>align-items: center;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>min-width: 50px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: white;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border-bottom: 3px solid #FFF;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.team-b-block .sets-block {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border-bottom: 3px solid #FFEB3B;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.sets-label {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-size: 9px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-weight: 700;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>opacity: 0.7;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>text-transform: uppercase;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>line-height: 1;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>margin-bottom: 2px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.sets-score {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-family: 'Oswald', sans-serif;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-size: 22px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-weight: 700;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>line-height: 1;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/* Pontuação de Pontos (Central) */</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.points-block {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: #4A148C;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>height: 100%;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>display: flex;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>align-items: center;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>justify-content: center;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-family: 'Oswald', sans-serif;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-size: 36px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-weight: 700;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: white;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>min-width: 55px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding: 0 5px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/* Logo da Competição no Meio */</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.logo-center {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-color: #311B92;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>height: 100%;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>display: flex;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>align-items: center;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>justify-content: center;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding: 0 15px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-family: 'Oswald', sans-serif;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-size: 24px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-weight: 700;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #FF5252;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-style: italic;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>letter-spacing: -1px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/* Painel de Controle Operacional */</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.control-panel {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>margin-top: 30px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background: rgba(0, 0, 0, 0.9);<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding: 20px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border-radius: 12px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: white;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>display: flex;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>gap: 25px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>box-shadow: 0 4px 20px rgba(0,0,0,0.6);<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.control-group {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>display: flex;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>flex-direction: column;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>align-items: center;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>gap: 8px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.control-group label {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-size: 11px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-weight: bold;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>text-transform: uppercase;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: #ccc;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.btn-row { display: flex; gap: 5px; }</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>button {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background: #4A148C;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: white;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border: none;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding: 6px 16px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-weight: bold;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>cursor: pointer;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border-radius: 4px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-size: 16px;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>button:active { background: #7B1FA2; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.btn-clear { background: #d32f2f; }</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>input[type="text"] {<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>width: 90px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>text-align: center;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background: #222;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>color: white;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border: 1px solid #444;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>border-radius: 4px;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-weight: bold;<span class="Apple-converted-space"> </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>padding: 4px;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.url-input {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>width: 140px !important;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>font-size: 10px;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
-<p class="p1"><span class="s1">&lt;body&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- PLACAR (image.png) --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="scoreboard-container"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;!-- Time A (Esquerda) --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="team-block"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;img class="team-logo" id="logoA-display" src="https://livenow.nabiapp.com/app_assets/images/placeholder_team_1.png" alt="Escudo A"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="team-name" id="teamA-display"&gt;HOME&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="sets-block"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="sets-label"&gt;Sets&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="sets-score" id="setsA-display"&gt;0&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="points-block" id="pointsA-display"&gt;0&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;!-- Logo Central VNL --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="logo-center" id="logo-display"&gt;VNL&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;!-- Time B (Direita) --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="points-block" id="pointsB-display"&gt;0&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="sets-block"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="sets-label"&gt;Sets&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="sets-score" id="setsB-display"&gt;0&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="team-block team-b-block"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="team-name" id="teamB-display"&gt;AWAY&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;img class="team-logo" id="logoB-display" src="https://livenow.nabiapp.com/app_assets/images/placeholder_team_2.png" alt="Escudo B"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;!-- PAINEL DE CONTROLE --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="control-panel"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;!-- Controle Time A --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="control-group"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;label&gt;Nome Time A&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="text" id="nameA-input" value="HOME" oninput="updateNames()"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;label&gt;URL Escudo A&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="text" class="url-input" id="urlA-input" value="https://livenow.nabiapp.com/app_assets/images/placeholder_team_1.png" oninput="updateLogos()"&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;label&gt;Pontos (A)&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="btn-row"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;button onclick="changeValue('pointsA', -1)"&gt;-&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;button onclick="changeValue('pointsA', 1)"&gt;+&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;label&gt;Sets (A)&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="btn-row"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;button onclick="changeValue('setsA', -1)"&gt;-&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;button onclick="changeValue('setsA', 1)"&gt;+&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;!-- Controle Geral Centro --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="control-group" style="justify-content: center;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;label&gt;Logo Central&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="text" id="logo-input" value="VNL" oninput="updateCenterLogo()" style="width: 80px; margin-bottom: 15px;"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button class="btn-clear" onclick="resetScoreboard()"&gt;Zerar Tudo&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;!-- Controle Time B --&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="control-group"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;label&gt;Nome Time B&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="text" id="nameB-input" value="AWAY" oninput="updateNames()"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;label&gt;URL Escudo B&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;input type="text" class="url-input" id="urlB-input" value="https://livenow.nabiapp.com/app_assets/images/placeholder_team_2.png" oninput="updateLogos()"&gt;</span></p>
-<p class="p2"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;label&gt;Pontos (B)&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="btn-row"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;button onclick="changeValue('pointsB', -1)"&gt;-&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;button onclick="changeValue('pointsB', 1)"&gt;+&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;label&gt;Sets (B)&lt;/label&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="btn-row"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;button onclick="changeValue('setsB', -1)"&gt;-&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;button onclick="changeValue('setsB', 1)"&gt;+&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>let data = { pointsA: 0, pointsB: 0, setsA: 0, setsB: 0 };</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function changeValue(field, amount) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>data[field] += amount;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>if (data[field] &lt; 0) data[field] = 0;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById(field + '-display').innerText = data[field];</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function updateNames() {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>let nameA = document.getElementById('nameA-input').value;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>let nameB = document.getElementById('nameB-input').value;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>// Limita a exibição a 3 letras maiúsculas para manter o estilo condensado da VNL</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById('teamA-display').innerText = nameA.substring(0, 4).toUpperCase();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById('teamB-display').innerText = nameB.substring(0, 4).toUpperCase();</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function updateLogos() {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>let urlA = document.getElementById('urlA-input').value;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>let urlB = document.getElementById('urlB-input').value;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById('logoA-display').src = urlA;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById('logoB-display').src = urlB;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function updateCenterLogo() {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById('logo-display').innerText = document.getElementById('logo-input').value;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p2"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function resetScoreboard() {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>data = { pointsA: 0, pointsB: 0, setsA: 0, setsB: 0 };</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById('pointsA-display').innerText = 0;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById('pointsB-display').innerText = 0;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById('setsA-display').innerText = 0;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById('setsB-display').innerText = 0;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+  <main class="scoreboard-container">
+    <section class="team-block">
+      <img class="team-logo" id="logoA-display" src="https://livenow.nabiapp.com/app_assets/images/placeholder_team_1.png" />
+      <div class="team-name" id="teamA-display">HOME</div>
+    </section>
+
+    <section class="sets-block">
+      <div class="sets-label">Sets</div>
+      <div class="sets-score" id="setsA-display">0</div>
+    </section>
+
+    <section class="points-block" id="pointsA-display">0</section>
+
+    <section class="logo-center" id="logo-display">VNL</section>
+
+    <section class="points-block" id="pointsB-display">0</section>
+
+    <section class="sets-block team-b-sets">
+      <div class="sets-label">Sets</div>
+      <div class="sets-score" id="setsB-display">0</div>
+    </section>
+
+    <section class="team-block team-b-block">
+      <div class="team-name" id="teamB-display">AWAY</div>
+      <img class="team-logo" id="logoB-display" src="https://livenow.nabiapp.com/app_assets/images/placeholder_team_2.png" />
+    </section>
+  </main>
+
+  <aside class="control-panel">
+    <div class="control-group">
+      <label>Nome Time A</label>
+      <input type="text" id="nameA-input" value="HOME" maxlength="12" />
+
+      <label>URL Escudo A</label>
+      <input type="url" class="url-input" id="urlA-input" value="https://livenow.nabiapp.com/app_assets/images/placeholder_team_1.png" />
+
+      <label>Pontos A</label>
+      <div class="btn-row">
+        <button data-field="pointsA" data-amount="-1">-</button>
+        <button data-field="pointsA" data-amount="1">+</button>
+      </div>
+
+      <label>Sets A</label>
+      <div class="btn-row">
+        <button data-field="setsA" data-amount="-1">-</button>
+        <button data-field="setsA" data-amount="1">+</button>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label>Logo Central</label>
+      <input type="text" id="logo-input" value="VNL" maxlength="12" />
+      <button class="btn-clear" id="reset-button">Zerar Tudo</button>
+    </div>
+
+    <div class="control-group">
+      <label>Nome Time B</label>
+      <input type="text" id="nameB-input" value="AWAY" maxlength="12" />
+
+      <label>URL Escudo B</label>
+      <input type="url" class="url-input" id="urlB-input" value="https://livenow.nabiapp.com/app_assets/images/placeholder_team_2.png" />
+
+      <label>Pontos B</label>
+      <div class="btn-row">
+        <button data-field="pointsB" data-amount="-1">-</button>
+        <button data-field="pointsB" data-amount="1">+</button>
+      </div>
+
+      <label>Sets B</label>
+      <div class="btn-row">
+        <button data-field="setsB" data-amount="-1">-</button>
+        <button data-field="setsB" data-amount="1">+</button>
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    const STORAGE_KEY = 'placar_volei_livenow_obs_v1';
+
+    const defaultState = {
+      pointsA: 0,
+      pointsB: 0,
+      setsA: 0,
+      setsB: 0,
+      nameA: 'HOME',
+      nameB: 'AWAY',
+      centerLogo: 'VNL',
+      logoA: 'https://livenow.nabiapp.com/app_assets/images/placeholder_team_1.png',
+      logoB: 'https://livenow.nabiapp.com/app_assets/images/placeholder_team_2.png'
+    };
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? { ...defaultState, ...JSON.parse(saved) } : { ...defaultState };
+      } catch {
+        return { ...defaultState };
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function clampScore(value) {
+      return Math.max(0, Number(value) || 0);
+    }
+
+    function shortName(value) {
+      return String(value || '').trim().toUpperCase().slice(0, 4) || '----';
+    }
+
+    function updateDisplay() {
+      document.getElementById('pointsA-display').textContent = state.pointsA;
+      document.getElementById('pointsB-display').textContent = state.pointsB;
+      document.getElementById('setsA-display').textContent = state.setsA;
+      document.getElementById('setsB-display').textContent = state.setsB;
+      document.getElementById('teamA-display').textContent = shortName(state.nameA);
+      document.getElementById('teamB-display').textContent = shortName(state.nameB);
+      document.getElementById('logo-display').textContent = String(state.centerLogo || 'VNL').toUpperCase();
+      document.getElementById('logoA-display').src = state.logoA || defaultState.logoA;
+      document.getElementById('logoB-display').src = state.logoB || defaultState.logoB;
+
+      document.getElementById('nameA-input').value = state.nameA;
+      document.getElementById('nameB-input').value = state.nameB;
+      document.getElementById('logo-input').value = state.centerLogo;
+      document.getElementById('urlA-input').value = state.logoA;
+      document.getElementById('urlB-input').value = state.logoB;
+    }
+
+    function changeValue(field, amount) {
+      state[field] = clampScore((state[field] || 0) + amount);
+      saveState();
+      updateDisplay();
+    }
+
+    function resetScoreboard() {
+      state.pointsA = 0;
+      state.pointsB = 0;
+      state.setsA = 0;
+      state.setsB = 0;
+      saveState();
+      updateDisplay();
+    }
+
+    document.querySelectorAll('button[data-field]').forEach(button => {
+      button.addEventListener('click', () => {
+        changeValue(button.dataset.field, Number(button.dataset.amount));
+      });
+    });
+
+    document.getElementById('reset-button').addEventListener('click', resetScoreboard);
+
+    document.getElementById('nameA-input').addEventListener('input', e => {
+      state.nameA = e.target.value;
+      saveState();
+      updateDisplay();
+    });
+
+    document.getElementById('nameB-input').addEventListener('input', e => {
+      state.nameB = e.target.value;
+      saveState();
+      updateDisplay();
+    });
+
+    document.getElementById('logo-input').addEventListener('input', e => {
+      state.centerLogo = e.target.value;
+      saveState();
+      updateDisplay();
+    });
+
+    document.getElementById('urlA-input').addEventListener('input', e => {
+      state.logoA = e.target.value;
+      saveState();
+      updateDisplay();
+    });
+
+    document.getElementById('urlB-input').addEventListener('input', e => {
+      state.logoB = e.target.value;
+      saveState();
+      updateDisplay();
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('control') === '1' || params.get('controls') === '1') {
+      document.body.classList.add('show-controls');
+    }
+
+    updateDisplay();
+  </script>
 </body>
 </html>
